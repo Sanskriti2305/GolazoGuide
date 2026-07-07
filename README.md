@@ -34,12 +34,16 @@ Every module reads from the same context engine, so a single data pipeline power
 
 ---
 
-## Why It's Built for World Cup 2026 Specifically
+## Why It's Designed Around World Cup 2026's Scale
 
-- **One profile, 16 stadiums** — a fan's accessibility settings (routing preference, sign language, sensory sensitivity) travel with them across host cities instead of resetting per venue.
-- **48 teams, dozens of languages, one venue** — multilingual support and sign-language variants (ASL, BSL, LSF, and more) are built for a scale no single-nation tournament has faced before.
-- **Match-aware, not just crowd-aware** — surges in noise, movement, and exits are predicted from live match events (goals, penalties, red cards), not just historical foot traffic.
-- **Stadium and Fan Festival dual-mode** — extends beyond the stadium bowl to official outdoor FIFA Fan Festivals, which have very different crowd dynamics.
+Golazo Guide is a general-purpose stadium assistance platform — the same engine works for any tournament, league, or venue. World Cup 2026 is simply the hardest version of the problem, so building for it means the platform is stress-tested for a scale that makes it work everywhere else too:
+
+- **One profile, many stadiums** — a fan's accessibility settings (routing preference, sign language, sensory sensitivity) travel with them across venues instead of resetting at each one. Useful for a 16-stadium World Cup, but just as useful for any fan who attends matches at multiple venues.
+- **48 teams, dozens of languages, one venue** — multilingual support and sign-language variants (ASL, BSL, LSF, and more) are built for a scale most single tournaments never face — which means smaller tournaments are comfortably within scope.
+- **Match-aware, not just crowd-aware** — surges in noise, movement, and exits are predicted from live match events (goals, penalties, red cards), a model that generalizes to any football match, not just World Cup fixtures.
+- **Stadium and Fan Festival dual-mode** — extends beyond the stadium bowl to official outdoor fan zones, relevant for any large public viewing event, not only FIFA's.
+
+In short: designing for World Cup 2026 forces the platform to handle the hardest case (scale, languages, multi-venue), which is exactly what makes it reusable for any future tournament, league season, or stadium — the World Cup is the proving ground, not a limitation.
 
 ---
 
@@ -65,32 +69,34 @@ Every module reads from the same context engine, so a single data pipeline power
 
 ## Plan of Action
 
-### Phase 1 — Foundation (Week 1–2)
+Phases are sequential but self-paced — move to the next once the current one is functionally solid, not on a fixed schedule.
+
+### Phase 1 — Foundation
 - Define data schema for the Stadium Context Engine (location, crowd density, noise, match events, obstructions)
 - Build a mock/simulated data feed to stand in for live sensors during development
 - Set up backend service that ingests and exposes this context via API
 - Wireframe the fan-facing app and volunteer-facing app separately
 
-### Phase 2 — Core Module MVPs (Week 3–4)
+### Phase 2 — Core Module MVPs
 - Build **AR Navigator**: single stadium map, spoken turn-by-turn routing using mock obstruction data
 - Build **Sensory Load Map**: heatmap visualization + basic low-stimulation route logic
 - Build **Volunteer Co-Pilot**: multilingual Q&A demo using Claude API, hardcoded FAQ context to start
 
-### Phase 3 — GenAI Depth (Week 5–6)
+### Phase 3 — GenAI Depth
 - Add **Sign-Language Avatar** prototype (pre-generated avatar clips triggered by announcement text)
 - Add **Lip-Reading Caption Overlay** proof of concept (can be simplified to audio-only captioning if CV scope is too large)
 - Add **Seat-View Simulator**: generate sample seat-view images for a few representative sections
 - Wire the **Operational Intelligence Layer** to generate plain-language summaries from mock match-event + crowd data
 
-### Phase 4 — Integration & Polish (Week 7)
+### Phase 4 — Integration & Polish
 - Connect all modules to the single Stadium Context Engine so they visibly share one data source in the demo
-- Build a unified profile system (accessibility settings that persist across "stadiums" in the demo)
+- Build a unified profile system (accessibility settings that persist across venues in the demo)
 - Add offline fallback behavior for the Volunteer Co-Pilot
 - Stress-test for edge cases: no connectivity, conflicting sensor data, multiple languages at once
 
-### Phase 5 — Demo Prep (Week 8)
+### Phase 5 — Demo Prep
 - Script a live walkthrough: one fan journey (e.g., visually impaired fan navigating + hitting a sensory-heavy zone + getting routed around it)
-- Prepare a clear "why FIFA 2026 specifically" narrative slide (tri-nation, 48 teams, 16 stadiums)
+- Prepare a clear "why this scales to World Cup 2026" narrative slide (tri-nation, 48 teams, 16 stadiums)
 - Write test cases / sample scenarios for judges to see functioning end-to-end
 - Record a backup demo video in case of live-demo failure
 
