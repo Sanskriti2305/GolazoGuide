@@ -6,6 +6,13 @@ Golazo Guide is a GenAI-powered stadium assistance platform built for FIFA World
 
 ---
 
+## 🔗 Live Demo
+
+**[GOLAZO-GUIDE](https://golazoguide.onrender.com)**
+
+> Note: hosted on Render's free tier — the app may take 30–50 seconds to wake up on first load if it's been inactive.
+
+---
 ## The Problem
 
 World Cup stadiums are chaotic by design — massive crowds, dozens of languages, unfamiliar layouts, and split-second operational decisions. Existing solutions solve this in fragments: one app for wayfinding, another for translation, another for crowd alerts, and almost nothing built for fans with visual or sensory needs.
