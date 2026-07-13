@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Golazo Guide — Stadium Map Digitizer</title>
+</head>
+<body>
+  <h1>Stadium Map Digitizer</h1>
+  <input type="file" id="mapUpload" accept="image/*">
+  <br><br>
+  <button id="modeBtn" onclick="toggleMode()">Mode: Place Node</button>
+  <button onclick="exportGraph()">Export JSON</button>
+  <button onclick="clearGraph()">Clear All</button>
+  <button onclick="analyzeMap()">Analyze with AI</button>
+  <input type="text" id="stadiumName" placeholder="Stadium name (e.g. Seattle Stadium)">
+  <button onclick="saveMap()">Save to Database</button>
+
+  <p id="statusMsg"></p>
+
+  <canvas id="mapCanvas" style="border:1px solid black;"></canvas>
+
+  <h3>Exported JSON</h3>
+  <textarea id="jsonOutput" rows="10" cols="80"></textarea>
+
+  <script src="admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Golazo Guide</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<a href="#main-content" class="sr-only">Skip to main content</a>
+
+<nav class="app-navbar" aria-label="Main navigation">
+  <div class="nav-logo">GOLAZO <span>GUIDE</span></div>
+  <div class="nav-item active" data-page="home" role="link" tabindex="0" aria-current="page">Home</div>
+  <div class="nav-item" data-page="copilot" role="link" tabindex="0">Co-Pilot</div>
+  <div class="nav-item" data-page="history" role="link" tabindex="0">History</div>
+  <div class="nav-item" data-page="sensory" role="link" tabindex="0">Sensory</div>
+  <div class="nav-item" data-page="ops" role="link" tabindex="0">Operations</div>
+  <div class="nav-item" data-page="navigator" role="link" tabindex="0">Navigator</div>
+  <div class="nav-item" data-page="vision" role="link" tabindex="0">Vision</div>
+
+  <div class="nav-profile" id="navProfile" role="button" tabindex="0" aria-label="Account menu" aria-haspopup="true" aria-expanded="false">
+  <span id="navProfileInitial">S</span>
+  <div class="nav-profile-dropdown" id="navProfileDropdown">
+    <div class="nav-profile-email" id="navProfileEmail">Loading...</div>
+    <div class="nav-profile-item" id="logoutButton" role="button" tabindex="0">Sign Out</div>
+  </div>
+</div>
+</nav>
+
+
+<main id="main-content">
+
+<!-- HOME -->
+<div class="page active" id="page-home">
+  <div class="hero-frame">
+    <div class="frame-body">
+      <div class="frame-top-row">
+        <div class="frame-top-icons">
+          <div class="top-icon" role="button" tabindex="0" aria-label="Search">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+          </div>
+          <div class="top-icon" role="button" tabindex="0" aria-label="Notifications">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M18 8a6 6 0 00-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+          </div>
+          <div class="top-icon top-avatar" role="button" tabindex="0" aria-label="Account: Sanjita">S</div>
+        </div>
+      </div>
+
+      <div class="frame-badge">Matchday Assistant</div>
+      <h1 id="greetingHeadline">Good evening.</h1>
+      <p class="headline-sub">Ask about gates, seats, restrooms, or anything else — your Co-Pilot adapts to what's happening right now.</p>
+
+      <form class="hero-search-bar" onsubmit="event.preventDefault(); submitHeroSearch();">
+        <label for="heroSearchInput" class="sr-only">Ask a question</label>
+        <input type="text" id="heroSearchInput" placeholder="Curious about anything? Or want to shoot a goal?">
+        <button type="submit">Ask</button>
+      </form>
+      <div class="suggestion-chips" role="group" aria-label="Suggested questions">
+        <div class="chip" role="button" tabindex="0" onclick="quickAsk('Where is the nearest restroom?')">Nearest restroom</div>
+        <div class="chip" role="button" tabindex="0" onclick="quickAsk('How do I get to my seat?')">Directions to seat</div>
+        <div class="chip" role="button" tabindex="0" onclick="quickAsk('Is it crowded right now?')">Crowd check</div>
+      </div>
+
+      <div class="ticket-column" id="ticketColumn" aria-label="Upcoming matches"></div>
+    </div>
+  </div>
+
+  <div class="module-grid" role="navigation" aria-label="App modules">
+    <div class="module-card" data-page="copilot" role="link" tabindex="0" aria-label="Open Volunteer Co-Pilot">
+      <span class="icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.4 8.4 0 01-9 8.4A8.4 8.4 0 013 11.5a8.4 8.4 0 019-8.4 8.4 8.4 0 019 8.4z"/></svg></span>
+      <h3>Volunteer Co-Pilot</h3>
+      <p>Multilingual, context-aware answers for any fan question.</p>
+    </div>
+    <div class="module-card" data-page="sensory" role="link" tabindex="0" aria-label="Open Sensory Load Map">
+      <span class="icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 18v-6a9 9 0 0118 0v6"/><path d="M21 19a2 2 0 01-2 2h-1a2 2 0 01-2-2v-3a2 2 0 012-2h3zM3 19a2 2 0 002 2h1a2 2 0 002-2v-3a2 2 0 00-2-2H3z"/></svg></span>
+      <h3>Sensory Load Map</h3>
+      <p>Live noise and crowd intensity by zone.</p>
+    </div>
+    <div class="module-card" data-page="ops" role="link" tabindex="0" aria-label="Open Operational Intelligence">
+      <span class="icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12h4l3 8 4-16 3 8h4"/></svg></span>
+      <h3>Operational Intelligence</h3>
+      <p>AI-generated staff briefings from live match events.</p>
+    </div>
+    <div class="module-card" data-page="navigator" role="link" tabindex="0" aria-label="Open AR Navigator">
+      <span class="icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M16.24 7.76l-2.12 6.36-6.36 2.12 2.12-6.36z"/></svg></span>
+      <h3>AR Navigator</h3>
+      <p>Real pathfinding with spoken, obstruction-aware directions.</p>
+    </div>
+    <div class="module-card" data-page="vision" role="link" tabindex="0" aria-label="Open Vision Assist">
+      <span class="icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></span>
+      <h3>Vision Assist</h3>
+      <p>Point the camera — the app describes it out loud.</p>
+    </div>
+    <div class="module-card" data-page="history" role="link" tabindex="0" aria-label="Open History">
+      <span class="icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></span>
+      <h3>History</h3>
+      <p>Every fan conversation, logged and reviewable.</p>
+    </div>
+  </div>
+</div>
+
+<!-- =========================
+        CO-PILOT
+========================== -->
+
+<div class="page" id="page-copilot">
+
+    <section class="copilot-hero">
+
+        <div class="copilot-glow" aria-hidden="true"></div>
+
+        <div class="copilot-top">
+
+            <div>
+
+                <div class="frame-badge">
+                    Stadium Intelligence
+                </div>
+
+                <h1 class="copilot-heading">
+                    Volunteer Co-Pilot
+                </h1>
+
+                <p class="copilot-description">
+                    Your AI stadium companion for navigation, accessibility,
+                    venue information and live match assistance.
+                </p>
+
+            </div>
+
+            <div class="copilot-status">
+
+                <span class="status-indicator" aria-hidden="true"></span>
+
+                Live Stadium
+
+            </div>
+
+        </div>
+
+
+        <div class="landing-view" id="landingView">
+
+            <div class="assistant-mark" aria-hidden="true">
+
+                <div class="assistant-ring">
+                    <div class="assistant-core"></div>
+                </div>
+
+            </div>
+
+            <h2 class="landing-title">
+                How can I help today?
+            </h2>
+
+            <p class="landing-subtitle">
+                Ask about gates, navigation, food, accessibility or
+                anything happening inside the stadium.
+            </p>
+
+
+            <div class="suggestion-grid" role="group" aria-label="Suggested questions">
+
+                <div class="suggestion-card"
+                     role="button" tabindex="0"
+                     onclick="quickAsk('Guide me to my seat')">
+
+                    <h3>Seat Navigation</h3>
+
+                    <p>
+                        Find the fastest route to your seat.
+                    </p>
+
+                </div>
+
+                <div class="suggestion-card"
+                     role="button" tabindex="0"
+                     onclick="quickAsk('Nearest restroom')">
+
+                    <h3>Facilities</h3>
+
+                    <p>
+                        Locate restrooms, food courts and services.
+                    </p>
+
+                </div>
+
+                <div class="suggestion-card"
+                     role="button" tabindex="0"
+                     onclick="quickAsk('How crowded is Gate A?')">
+
+                    <h3>Crowd Conditions</h3>
+
+                    <p>
+                        Check congestion before moving.
+                    </p>
+
+                </div>
+
+                <div class="suggestion-card"
+                     role="button" tabindex="0"
+                     onclick="quickAsk('Todays match information')">
+
+                    <h3>Match Information</h3>
+
+                    <p>
+                        Fixtures, kickoff and venue updates.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <div class="conversation-view" id="conversationView">
+
+            <div class="conversation-header">
+
+                <div class="assistant-profile">
+
+                    <div class="assistant-avatar" aria-hidden="true">
+
+                        <div class="assistant-core small"></div>
+
+                    </div>
+
+                    <div>
+
+                        <h3>Golazo Guide AI</h3>
+
+                        <span>
+                            Connected to Live Stadium Intelligence
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div
+                class="chat-messages"
+                id="chatMessages"
+                role="log"
+                aria-live="polite"
+                aria-atomic="false"
+                aria-label="Conversation with Golazo Guide AI">
+
+            </div>
+
+        </div>
+
+
+        <form class="chat-input-wrapper" onsubmit="event.preventDefault(); sendChatMessage();">
+
+            <div class="chat-input-bar">
+
+                <label for="UserInput" class="sr-only">Message your Co-Pilot</label>
+                <input
+                    type="text"
+                    id="UserInput"
+                    placeholder="Ask about navigation, facilities or live match information..."
+                >
+
+                <button type="submit" id="testSrvr" aria-label="Send message">
+
+                    <svg width="18"
+                         height="18"
+                         viewBox="0 0 24 24"
+                         fill="none"
+                         stroke="currentColor"
+                         stroke-width="2"
+                         aria-hidden="true">
+
+                        <path d="M5 12h14"/>
+
+                        <path d="M13 5l7 7-7 7"/>
+
+                    </svg>
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </section>
+
+</div>
+
+<!-- HISTORY -->
+<div class="page" id="page-history">
+  <h2 class="page-title">Conversation History</h2>
+  <p class="page-subtitle">Every question asked so far.</p>
+  <div class="card">
+    <div id="historyL" aria-live="polite"></div>
+  </div>
+</div>
+
+<!-- =========================
+        SENSORY INTELLIGENCE
+========================= -->
+
+<div class="page" id="page-sensory">
+
+    <section class="sensory-dashboard">
+
+        <div class="sensory-glow" aria-hidden="true"></div>
+
+        <div class="dashboard-header">
+
+            <div>
+
+                <div class="frame-badge">
+                    Live Stadium Analytics
+                </div>
+
+                <h1 class="dashboard-title">
+                    Sensory Intelligence
+                </h1>
+
+                <p class="dashboard-subtitle">
+                    Real-time monitoring of crowd density, environmental conditions and accessibility
+                    insights across the stadium.
+                </p>
+
+            </div>
+
+            <div class="dashboard-status">
+
+                <span class="status-dot" aria-hidden="true"></span>
+
+                Live Monitoring
+
+            </div>
+
+        </div>
+
+
+        <!-- KPI CARDS -->
+
+        <div class="metrics-grid">
+
+            <div class="metric-card">
+
+                <span class="metric-label">
+                    Overall Load
+                </span>
+
+                <h2 id="overallLoad">
+                    72%
+                </h2>
+
+                <p>
+                    Stadium operating normally
+                </p>
+
+            </div>
+
+
+            <div class="metric-card">
+
+                <span class="metric-label">
+                    Noise Level
+                </span>
+
+                <h2 id="noiseLevel">
+                    Moderate
+                </h2>
+
+                <p>
+                    Average 64 dB
+                </p>
+
+            </div>
+
+
+            <div class="metric-card">
+
+                <span class="metric-label">
+                    Crowd Flow
+                </span>
+
+                <h2 id="crowdFlow">
+                    Stable
+                </h2>
+
+                <p>
+                    No congestion detected
+                </p>
+
+            </div>
+
+
+            <div class="metric-card">
+
+                <span class="metric-label">
+                    Accessibility
+                </span>
+
+                <h2 id="accessibility">
+                    Good
+                </h2>
+
+                <p>
+                    Routes remain accessible
+                </p>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- MAP BUILDER -->
+        <div class="heatmap-card">
+        <div class="card-header">
+            <div>
+            <h3>Stadium Map Builder</h3>
+            <span>Upload a seating chart to build a real navigable map</span>
+            </div>
+            <div style="display:flex; gap:8px;">
+            <button type="button" id="mapModeBtn" onclick="toggleMapMode()">Mode: Place Node</button>
+            <button type="button" onclick="analyzeMap()">Analyze with AI</button>
+            </div>
+        </div>
+
+        <div class="heatmap-container">
+            <label for="mapUpload" class="sr-only">Upload stadium map image</label>
+            <input type="file" id="mapUpload" accept="image/*" hidden>
+            <button type="button" id="mapUploadButton" style="margin-bottom:16px;">Choose Stadium Map Image</button>
+
+            <canvas id="mapCanvas" role="img" aria-label="Stadium map editor canvas" style="max-width:100%; border-radius:14px; border:1px solid rgba(255,255,255,0.15); display:block;"></canvas>
+
+            <p id="mapStatusMsg" role="status" style="margin-top:12px; color:rgba(255,255,255,0.6); font-size:13px;"></p>
+
+            <div style="display:flex; gap:10px; align-items:center; margin-top:12px;">
+            <label for="stadiumNameInput" class="sr-only">Stadium name</label>
+            <input type="text" id="stadiumNameInput" placeholder="Stadium name (e.g. Seattle Stadium)">
+            <button type="button" onclick="saveMapToDatabase()">Save to Database</button>
+            <button type="button" class="secondary" onclick="clearMapGraph()">Clear</button>
+            </div>
+        </div>
+        </div>
+
+
+
+        <!-- ZONES -->
+
+        <div class="zone-section">
+
+            <div class="card-header">
+
+                <h3>Zone Analysis</h3>
+
+                <span>
+                    Updated every few seconds
+                </span>
+
+            </div>
+
+            <div
+                class="zone-grid"
+                id="sensoryMap"
+                aria-live="polite">
+
+            </div>
+
+        </div>
+
+    </section>
+
+</div>
+
+<!-- =========================
+        OPERATIONS
+========================= -->
+
+<div class="page" id="page-ops">
+
+<section class="ops-dashboard">
+
+    <div class="ops-glow" aria-hidden="true"></div>
+
+    <div class="ops-header">
+
+        <div>
+
+            <div class="frame-badge">
+                Stadium Operations
+            </div>
+
+            <h1 class="ops-title">
+                Operational Intelligence
+            </h1>
+
+            <p class="ops-subtitle">
+                Monitor stadium activity, simulate match events and generate AI-powered operational briefings in real time.
+            </p>
+
+        </div>
+
+        <div class="dashboard-status">
+
+            <span class="status-dot" aria-hidden="true"></span>
+
+            Match Live
+
+        </div>
+
+    </div>
+
+
+
+    <!-- EVENT CARDS -->
+
+    <div class="event-grid" role="group" aria-label="Simulate stadium events">
+
+        <div class="event-card" role="button" tabindex="0" onclick="triggerEvent('goal')">
+
+            <div class="event-icon" aria-hidden="true">
+                GOAL
+            </div>
+
+            <h3>Goal Scored</h3>
+
+            <p>
+                Simulate a goal event and update crowd behaviour.
+            </p>
+
+        </div>
+
+
+        <div class="event-card" role="button" tabindex="0" onclick="triggerEvent('red_card')">
+
+            <div class="event-icon danger" aria-hidden="true">
+                RED
+            </div>
+
+            <h3>Red Card</h3>
+
+            <p>
+                Trigger crowd reaction and operational alerts.
+            </p>
+
+        </div>
+
+
+        <div class="event-card" role="button" tabindex="0" onclick="triggerEvent('halftime')">
+
+            <div class="event-icon" aria-hidden="true">
+                BREAK
+            </div>
+
+            <h3>Half Time</h3>
+
+            <p>
+                Simulate concession and movement surge.
+            </p>
+
+        </div>
+
+
+        <div class="event-card" role="button" tabindex="0" onclick="resetContext()">
+
+            <div class="event-icon neutral" aria-hidden="true">
+                RESET
+            </div>
+
+            <h3>Reset Simulation</h3>
+
+            <p>
+                Clear all simulated events.
+            </p>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- TWO COLUMN -->
+
+    <div class="ops-layout">
+
+        <!-- LEFT -->
+
+        <div class="timeline-card">
+
+            <div class="card-header">
+
+                <h3>
+                    Event Timeline
+                </h3>
+
+                <span>
+                    Current Session
+                </span>
+
+            </div>
+            <div
+                class="timeline"
+                id="eventTimeline"
+                aria-live="polite">
+
+                <div class="timeline-empty">
+
+                    No events have been simulated.
+
+                </div>
+
+            </div>
+        </div>
+
+
+
+        <!-- RIGHT -->
+
+        <div class="brief-card">
+
+            <div class="card-header">
+
+                <h3>
+                    AI Operational Brief
+                </h3>
+
+                <button
+                    class="generate-btn"
+                    onclick="getOpsSummary()">
+
+                    Generate
+
+                </button>
+
+            </div>
+
+
+            <div
+                id="opsSummary"
+                class="brief-output"
+                role="status"
+                aria-live="polite">
+
+                Your AI-generated operational briefing will appear here after events are simulated.
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+</div>
+
+<!-- NAVIGATOR -->
+<!-- =========================
+        NAVIGATOR
+========================= -->
+
+<div class="page" id="page-navigator">
+
+<section class="navigator-dashboard">
+
+    <div class="navigator-glow" aria-hidden="true"></div>
+
+    <div class="navigator-header">
+
+        <div>
+
+            <div class="frame-badge">
+                Indoor Navigation
+            </div>
+
+            <h1 class="navigator-title">
+                AR Navigator
+            </h1>
+
+            <p class="navigator-subtitle">
+                AI-powered navigation across the stadium with voice-guided directions and real-time routing.
+            </p>
+
+        </div>
+
+        <div class="dashboard-status">
+
+            <span class="status-dot" aria-hidden="true"></span>
+
+            Navigation Ready
+
+        </div>
+
+    </div>
+
+
+
+    <!-- Route Planner -->
+
+    <div class="route-card">
+
+        <div class="route-grid">
+
+            <div class="route-input">
+
+                <label for="stadiumIdInput">Stadium ID</label>
+
+                <input
+                    id="stadiumIdInput"
+                    type="text"
+                    placeholder="e.g. 2"
+                >
+
+            </div>
+
+            <div class="route-input">
+
+                <label for="fromInput">Current Location</label>
+
+                <input
+                    id="fromInput"
+                    type="text"
+                    placeholder="e.g. Gate A"
+                >
+
+            </div>
+
+            <div class="route-input">
+
+                <label for="toInput">Destination</label>
+
+                <input
+                    id="toInput"
+                    type="text"
+                    placeholder="e.g. Section B203"
+                >
+
+            </div>
+
+        </div>
+
+        <button
+            class="route-button"
+            onclick="getDirections()">
+
+            Generate Route
+
+        </button>
+
+    </div>
+
+
+
+    <!-- Map -->
+
+    <div class="map-card">
+
+        <div class="card-header">
+
+            <div>
+
+                <h3>Stadium Overview</h3>
+
+                <span>
+                    Interactive navigation preview
+                </span>
+
+            </div>
+
+        </div>
+
+        <div class="map-preview">
+
+            <img id="navigatorMapImage" src="" class="stadium-map" alt="Stadium seating chart with navigable gates, sections, and pathways" style="background:rgba(255,255,255,0.05);">
+        </div>
+
+    </div>
+
+
+
+    <!-- Route Output -->
+
+    <div class="directions-card">
+
+        <div class="card-header">
+
+            <h3>Navigation Instructions</h3>
+
+            <span>
+                Voice guidance enabled
+            </span>
+
+        </div>
+
+        <div
+            id="directionsOutput"
+            class="route-output"
+            role="status"
+            aria-live="polite">
+
+            Select your current location and destination to generate navigation instructions.
+
+        </div>
+
+    </div>
+
+</section>
+
+</div>
+
+<!-- =========================
+        VISION ASSIST
+========================= -->
+
+<div class="page" id="page-vision">
+
+<section class="vision-dashboard">
+
+    <div class="vision-glow" aria-hidden="true"></div>
+
+    <!-- Header -->
+
+    <div class="vision-header">
+
+        <div>
+
+            <div class="frame-badge">
+                AI Vision
+            </div>
+
+            <h1 class="vision-title">
+                Vision Assist
+            </h1>
+
+            <p class="vision-subtitle">
+                Understand your surroundings using real-time AI vision, accessibility assistance and object recognition.
+            </p>
+
+        </div>
+
+        <div class="dashboard-status">
+
+            <span class="status-dot" aria-hidden="true"></span>
+
+            Camera Ready
+
+        </div>
+
+    </div>
+
+
+    <!-- MAIN GRID -->
+
+    <div class="vision-grid">
+
+
+        <!-- CAMERA -->
+
+        <div class="camera-panel">
+
+            <div class="panel-header">
+
+                <div>
+
+                    <h3>Live Camera</h3>
+
+                    <span>Real-time Preview</span>
+
+                </div>
+
+            </div>
+
+            <div class="camera-wrapper">
+
+                <video
+                    id="cameraFeed"
+                    autoplay
+                    playsinline
+                    aria-label="Live camera feed">
+                </video>
+
+                <div class="camera-overlay" aria-hidden="true">
+
+                    <div class="camera-status">
+
+                        LIVE
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="camera-actions">
+
+                <button
+                    class="primary-btn"
+                    onclick="startCamera()">
+
+                    Start Camera
+
+                </button>
+
+                <button onclick="captureAndDescribe('general')">
+
+                    Describe Scene
+
+                </button>
+
+                <button onclick="captureAndDescribe('seat')">
+
+                    Read Seat
+
+                </button>
+
+                <button onclick="captureAndDescribe('sign')">
+
+                    Read Sign
+
+                </button>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- AI PANEL -->
+
+        <div class="analysis-panel">
+
+            <div class="panel-header">
+
+                <div>
+
+                    <h3>AI Insights</h3>
+
+                    <span>Generated Response</span>
+
+                </div>
+
+            </div>
+
+
+            <div
+                id="visionOutput"
+                class="vision-output"
+                role="status"
+                aria-live="polite">
+
+                <div class="placeholder">
+
+                    <div class="placeholder-circle" aria-hidden="true"></div>
+
+                    <h4>Ready for Analysis</h4>
+
+                    <p>
+
+                        Start the camera and capture your surroundings.
+
+                        AI descriptions, seat reading and signage recognition
+                        will appear here.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+</div>
+
+</main>
+
+<canvas id="captureCanvas" style="display:none;"></canvas>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="app.js"></script>
+</body>
+</html>

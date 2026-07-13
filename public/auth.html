@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Golazo Guide</title>
+
+    <link rel="stylesheet" href="auth.css">
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"/>
+
+</head>
+
+<body>
+
+<div class="background"></div>
+<div class="overlay"></div>
+
+<div class="auth-container">
+
+<div class="glass-wrapper">
+
+<!-- ================= LOGIN ================= -->
+
+<form id="loginForm" class="glass-card active">
+
+<div class="logo">
+
+<span>GOLAZO</span>
+
+<strong>GUIDE</strong>
+
+</div>
+
+<div class="heading">
+
+<h1>Welcome Back</h1>
+
+<p>Sign in to continue your stadium experience.</p>
+
+</div>
+
+<input
+id="loginEmail"
+type="email"
+placeholder="Email"
+required>
+
+<div class="password-field">
+
+<input
+id="loginPassword"
+type="password"
+placeholder="Password"
+required>
+
+<span
+class="toggle-password"
+data-target="loginPassword">
+
+<i class="fa-regular fa-eye"></i>
+
+</span>
+
+</div>
+
+<button
+type="submit"
+class="primary-btn">
+
+Continue
+
+</button>
+
+<div class="switch-text">
+
+Don't have an account?
+
+<span id="showSignup">
+
+Create Matchday Pass
+
+</span>
+
+</div>
+
+</form>
+
+<!-- ================= SIGNUP ================= -->
+
+<form id="signupForm" class="glass-card">
+
+<div class="logo">
+
+<span>GOLAZO</span>
+
+<strong>GUIDE</strong>
+
+</div>
+
+<div class="heading">
+
+<h1>Create Account</h1>
+
+<p>Create your matchday account.</p>
+
+</div>
+
+<input
+id="signupName"
+type="text"
+placeholder="Full Name"
+required>
+
+<input
+id="signupEmail"
+type="email"
+placeholder="Email"
+required>
+
+<div class="password-field">
+
+<input
+id="signupPassword"
+type="password"
+placeholder="Password"
+required>
+
+<span
+class="toggle-password"
+data-target="signupPassword">
+
+<i class="fa-regular fa-eye"></i>
+
+</span>
+
+</div>
+
+<div class="password-field">
+
+<input
+id="confirmPassword"
+type="password"
+placeholder="Confirm Password"
+required>
+
+<span
+class="toggle-password"
+data-target="confirmPassword">
+
+<i class="fa-regular fa-eye"></i>
+
+</span>
+
+</div>
+
+<button
+type="submit"
+class="primary-btn">
+
+Create Account
+
+</button>
+
+<div class="switch-text">
+
+Already have an account?
+
+<span id="showLogin">
+
+Sign In
+
+</span>
+
+</div>
+
+</form>
+
+</div>
+
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="auth.js"></script>
+
+</body>
+
+</html>
