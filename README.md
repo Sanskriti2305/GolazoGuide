@@ -10,8 +10,6 @@ Golazo Guide is a GenAI-powered stadium assistance platform built for FIFA World
 
 **[GOLAZO-GUIDE](https://golazoguide.onrender.com)**
 
-> Note: hosted on Render's free tier — the app may take 30–50 seconds to wake up on first load if it's been inactive.
-
 ---
 ## The Problem
 
