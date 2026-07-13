@@ -2,124 +2,116 @@
 
 **The assist behind every fan's golazo moment.**
 
-Golazo Guide is a GenAI-powered assistance platform built for the scale of the FIFA World Cup 2026 — the first 48-team, tri-nation tournament spanning 16 stadiums across the US, Mexico, and Canada. It unifies navigation, accessibility, and real-time operational intelligence into a single adaptive engine that serves everyone inside a stadium: fans with disabilities, general attendees, volunteers, and venue staff.
+Golazo Guide is a GenAI-powered stadium assistance platform built for FIFA World Cup 2026. It combines real-time crowd intelligence, AI-generated navigation, multilingual fan support, and live vision-based accessibility assistance into a single Express + Supabase + Gemini application.
 
 ---
 
 ## The Problem
 
-World Cup stadiums are chaotic by design — massive crowds, dozens of languages, unfamiliar layouts, and split-second operational decisions. Existing solutions solve this in fragments: one app for wayfinding, another for translation, another for crowd alerts. None of them talk to each other, and almost none are built for fans with visual, hearing, or sensory needs, who are often left with no real support at all.
+World Cup stadiums are chaotic by design — massive crowds, dozens of languages, unfamiliar layouts, and split-second operational decisions. Existing solutions solve this in fragments: one app for wayfinding, another for translation, another for crowd alerts, and almost nothing built for fans with visual or sensory needs.
 
-Golazo Guide asks a simple question: **what if one GenAI engine could power every kind of assistance a stadium needs, for every kind of person who needs it?**
+Golazo Guide unifies this into one platform, backed by a shared **Context Engine** that every module reads from and writes to — so navigation, accessibility, and crowd intelligence all reflect the same live stadium state.
 
 ---
 
-## What Golazo Guide Does
+## What's Built
 
-Golazo Guide is built around a shared **Stadium Context Engine** — a real-time feed of crowd density, noise levels, match events, obstructions, and location data. GenAI takes that same context and outputs a different experience depending on who's asking and what they need.
-
-### Core Modules
-
-| Module | Who it helps | What it does |
+| Module | What it does | Backed by |
 |---|---|---|
-| **AR Navigator** | Visually impaired fans | Generates real-time, spoken turn-by-turn walking routes that account for live obstructions like queues, spills, or closed gates |
-| **Sensory Load Map** | Neurodivergent fans, families, overstimulated fans | Builds a live noise/light/crowd heatmap of the stadium and routes fans through a personalized low-stimulation path |
-| **Sign-Language Avatar** | Deaf and hard-of-hearing fans | Converts live PA announcements into a GenAI-generated signing avatar shown on screens and in-app |
-| **Lip-Reading Caption Overlay** | Hard-of-hearing fans | Point a phone camera at a volunteer or staff member and get live captions generated from lip movement and audio fusion |
-| **Seat-View Simulator** | Fans with mobility or visual constraints | Generates a realistic preview of the actual view from any seat — obstructions, distance, glare — before match day |
-| **Volunteer & Staff Co-Pilot** | Volunteers, venue staff | Real-time multilingual translation plus context-aware answers to fan questions, usable offline via an on-device model |
-| **Operational Intelligence Layer** | Organizers, security, transport teams | Predicts crowd surges and transport demand tied to live match events (goals, cards, final whistle), with plain-language incident narration for staff |
+| **Volunteer/Fan Co-Pilot** | Context-aware multilingual chat — answers fan questions using live crowd/noise conditions and real-time web search grounding | Gemini 2.5 Flash + Google Search tool |
+| **Sensory Load Map** | Classifies stadium zones into calm/moderate/overwhelming based on live noise + crowd scores | Custom classification logic (unit tested) |
+| **Operational Intelligence** | Simulates live match events (goals, red cards, halftime) rippling through crowd/noise data, plus AI-generated plain-language staff briefings | Gemini 2.5 Flash |
+| **AR Navigator** | Real Dijkstra's shortest-path routing across an AI-digitized stadium map, converted into spoken step-by-step directions | Custom pathfinding (unit tested) + Gemini + Web Speech API |
+| **Vision Assist** | Live camera feed analyzed by Gemini vision (seat numbers, signage, general obstacles), read aloud via text-to-speech, for blind/low-vision fans | Gemini 2.5 Flash (vision) |
+| **Stadium Map Builder** | Upload a seating chart image → Gemini vision extracts section/gate labels as coordinates → auto-connects a navigable graph → saved to Supabase | Gemini 2.5 Flash (vision) + Supabase |
 
-Every module reads from the same context engine, so a single data pipeline powers navigation, accessibility, translation, and crowd intelligence — not five disconnected features bolted together.
-
----
-
-## Why It's Designed Around World Cup 2026's Scale
-
-Golazo Guide is a general-purpose stadium assistance platform — the same engine works for any tournament, league, or venue. World Cup 2026 is simply the hardest version of the problem, so building for it means the platform is stress-tested for a scale that makes it work everywhere else too:
-
-- **One profile, many stadiums** — a fan's accessibility settings (routing preference, sign language, sensory sensitivity) travel with them across venues instead of resetting at each one. Useful for a 16-stadium World Cup, but just as useful for any fan who attends matches at multiple venues.
-- **48 teams, dozens of languages, one venue** — multilingual support and sign-language variants (ASL, BSL, LSF, and more) are built for a scale most single tournaments never face — which means smaller tournaments are comfortably within scope.
-- **Match-aware, not just crowd-aware** — surges in noise, movement, and exits are predicted from live match events (goals, penalties, red cards), a model that generalizes to any football match, not just World Cup fixtures.
-- **Stadium and Fan Festival dual-mode** — extends beyond the stadium bowl to official outdoor fan zones, relevant for any large public viewing event, not only FIFA's.
-
-In short: designing for World Cup 2026 forces the platform to handle the hardest case (scale, languages, multi-venue), which is exactly what makes it reusable for any future tournament, league season, or stadium — the World Cup is the proving ground, not a limitation.
+All modules read from and write to a single shared **Stadium Context Engine** (`stadiumContext`), so a crowd surge triggered in Operational Intelligence is immediately visible in the Sensory Load Map, without duplicating state across features.
 
 ---
 
-## Who Benefits
+## Tech Stack
 
-- **Fans** with visual, hearing, sensory, or mobility needs get real assistance, not an afterthought feature.
-- **General fans** get faster navigation, shorter effective wait times, and clearer communication.
-- **Volunteers** get an on-the-ground translation and knowledge co-pilot so they can help any fan, in any language, instantly.
-- **Organizers and security teams** get plain-language, real-time operational intelligence instead of raw sensor noise.
-
----
-
-## Tech Stack (proposed)
-
-- **GenAI / LLM layer:** Claude API (context-aware generation, translation, incident narration)
-- **On-device model:** small offline-capable LLM for the Volunteer Co-Pilot in low-connectivity zones
-- **Computer vision:** obstruction detection, lip-reading fusion, crowd density estimation
-- **Real-time data pipeline:** ingesting turnstile, CCTV, noise sensor, and live match-event data
-- **Frontend:** mobile app (fan and volunteer views) + venue display integration (signage, screens)
-- **Backend:** Stadium Context Engine — a shared state service all modules query and subscribe to
+- **Backend:** Node.js + Express, routes split by feature (`routes/chat.js`, `navigator.js`, `sensoryMap.js`, `opsIntelligence.js`, `mapAnalyzer.js`, `context.js`, `visionAssist.js`, `auth.js`)
+- **AI:** Google Gemini API (`@google/generative-ai`), model `gemini-2.5-flash`, with Google Search tool grounding for real-time factual answers
+- **Database:** Supabase (Postgres) — `messages` (chat history, scoped per user) and `stadium_maps` (nodes/edges/image per venue)
+- **Auth:** Supabase Auth — real signup/login, session-based route protection via custom Express middleware, profile dropdown + sign-out
+- **Frontend:** Vanilla HTML/CSS/JS, single-page app with `.page` sections, dark glassmorphism UI
+- **Testing:** Jest — unit tests for Dijkstra's pathfinding (`navigator.js`) and sensory zone classification (`sensoryMap.js`)
 
 ---
 
-## Plan of Action
+## Setup
 
-Phases are sequential but self-paced — move to the next once the current one is functionally solid, not on a fixed schedule.
+1. Clone the repo and install dependencies:
+   ```bash
+   git clone https://github.com/Sanskriti2305/GolazoGuide.git
+   cd GolazoGuide
+   npm install
+   ```
 
-### Phase 1 — Foundation
-- Define data schema for the Stadium Context Engine (location, crowd density, noise, match events, obstructions)
-- Build a mock/simulated data feed to stand in for live sensors during development
-- Set up backend service that ingests and exposes this context via API
-- Wireframe the fan-facing app and volunteer-facing app separately
+2. Create a `.env` file in the project root (never commit this file):
+   ```
+   GEMINI_API_KEY=your_gemini_api_key
+   SUPABASE_URL=your_supabase_project_url
+   SUPABASE_KEY=your_supabase_anon_key
+   ```
 
-### Phase 2 — Core Module MVPs
-- Build **AR Navigator**: single stadium map, spoken turn-by-turn routing using mock obstruction data
-- Build **Sensory Load Map**: heatmap visualization + basic low-stimulation route logic
-- Build **Volunteer Co-Pilot**: multilingual Q&A demo using Claude API, hardcoded FAQ context to start
+3. Run the server:
+   ```bash
+   node server.js
+   ```
+   The app runs at `http://localhost:3000`.
 
-### Phase 3 — GenAI Depth
-- Add **Sign-Language Avatar** prototype (pre-generated avatar clips triggered by announcement text)
-- Add **Lip-Reading Caption Overlay** proof of concept (can be simplified to audio-only captioning if CV scope is too large)
-- Add **Seat-View Simulator**: generate sample seat-view images for a few representative sections
-- Wire the **Operational Intelligence Layer** to generate plain-language summaries from mock match-event + crowd data
-
-### Phase 4 — Integration & Polish
-- Connect all modules to the single Stadium Context Engine so they visibly share one data source in the demo
-- Build a unified profile system (accessibility settings that persist across venues in the demo)
-- Add offline fallback behavior for the Volunteer Co-Pilot
-- Stress-test for edge cases: no connectivity, conflicting sensor data, multiple languages at once
-
-### Phase 5 — Demo Prep
-- Script a live walkthrough: one fan journey (e.g., visually impaired fan navigating + hitting a sensory-heavy zone + getting routed around it)
-- Prepare a clear "why this scales to World Cup 2026" narrative slide (tri-nation, 48 teams, 16 stadiums)
-- Write test cases / sample scenarios for judges to see functioning end-to-end
-- Record a backup demo video in case of live-demo failure
+4. Run the test suite:
+   ```bash
+   npm test
+   ```
 
 ---
 
-## Roadmap Checklist
+## Security
 
-- [ ] Stadium Context Engine (mock data pipeline)
-- [ ] AR Navigator MVP
-- [ ] Sensory Load Heatmap
-- [ ] Volunteer Co-Pilot (multilingual Q&A)
-- [ ] Sign-Language Avatar prototype
-- [ ] Lip-Reading Caption Overlay proof of concept
-- [ ] Seat-View Simulator
-- [ ] Operational Intelligence Layer
-- [ ] Full integration demo across all modules
-- [ ] Final pitch deck + demo script
+- Supabase Auth session tokens are verified server-side (not just checked client-side) via a custom `requireAuth` middleware, protecting the `/api/chat` routes from unauthenticated access
+- Chat history is scoped per user (`user_id` filtering) — one fan cannot read another fan's conversation history
+- The Supabase key used in frontend code is the public **anon** key, which is safe to expose by design; row-level security policies (not secret keys) are what actually gate data access
+- `.env` is excluded via `.gitignore`, keeping the Gemini API key and Supabase credentials out of version control
+
+---
+
+## Accessibility
+
+- ARIA roles and labels on all interactive elements
+- Full keyboard navigation — Enter/Space activates custom controls, Enter submits every input field app-wide
+- `aria-live` regions for dynamically updated content (chat replies, navigation directions, vision descriptions)
+- Screen-reader-only labels (`sr-only`) on icon-only controls
+- Skip-to-content link
+- Spoken output (Web Speech API) for AR Navigator directions and Vision Assist descriptions, built specifically for blind/low-vision fans
+
+---
+
+## Testing
+
+9 passing Jest tests covering:
+- Dijkstra's shortest-path algorithm (`findShortestPath`) — correctness across multiple graph shapes, including unreachable nodes
+- Sensory zone classification (`classifyIntensity`) — threshold boundaries for calm/moderate/overwhelming
+
+Pure logic functions are exported separately from their Express routers specifically so they can be unit tested without spinning up a server or mocking HTTP requests.
+
+---
+
+## Known Limitations
+
+Built under hackathon time constraints — documented here rather than hidden, since acknowledging tradeoffs is itself part of engineering judgment:
+
+- Only the chat route currently enforces server-side auth; other routes (`navigator`, `sensory-map`, `ops`, `map`, `vision`) are not yet session-gated
+- Shared in-memory `stadiumContext` state would not scale across multiple server instances without moving to a real datastore (e.g. Redis)
+- Limited request body validation on some routes
 
 ---
 
 ## Team & Context
 
-Built as a submission exploring how Generative AI can enhance stadium operations and tournament experience for the FIFA World Cup 2026, across navigation, accessibility, crowd management, and real-time decision support.
+Built as a submission exploring how Generative AI can enhance stadium operations and fan accessibility for FIFA World Cup 2026 — covering navigation, accessibility, crowd management, and real-time decision support.
 
 ---
 
