@@ -3,8 +3,10 @@ const express = require('express');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 const { createClient } = require('@supabase/supabase-js');
 const authRoutes = require("./routes/auth");
+const compression = require('compression');
 
 const app = express();
+app.use(compression()); // gzip responses — smaller payloads, faster load, standard production practice
 const PORT = process.env.PORT || 3000;
 
 app.use(express.static('public')); // serves index.html, auth.html, and all frontend JS/CSS as static files
@@ -44,7 +46,7 @@ let stadiumContext = {
 app.use('/api/chat', requireAuth, require('./routes/chat')(model, supabase, stadiumContext));
 app.use('/api/context', require('./routes/context')(stadiumContext));
 app.use('/api/sensory-map', require('./routes/sensoryMap').createRouter(stadiumContext));
-app.use('/api/ops', require('./routes/opsIntelligence')(model, stadiumContext));
+app.use('/api/ops', requireAuth, require('./routes/opsIntelligence').createRouter(model, stadiumContext));
 app.use('/api/map', require('./routes/mapAnalyzer')(model, supabase));
 app.use('/api/navigator', require('./routes/navigator').createRouter(model, supabase));
 app.use('/api/vision', require('./routes/visionAssist')(model));

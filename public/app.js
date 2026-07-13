@@ -152,7 +152,7 @@ async function loadHistory() {
 
 // ---------- SENSORY MAP ----------
 async function loadSensoryMap() {
-  const response = await fetch("/api/sensory-map");
+  const response = await authFetch("/api/sensory-map");
   const zones = await response.json();
   renderSensoryMap(zones);
 }
@@ -242,13 +242,13 @@ function renderSensoryMap(zones) {
 
 // ---------- OPERATIONS ----------
 async function resetContext() {
-  await fetch('/api/context/reset', { method: 'POST' });
+  await authFetch('/api/context/reset', { method: 'POST' });
   loadSensoryMap();
 }
 
 async function triggerEvent(event) {
   addTimelineEvent(event);
-  await fetch('/api/ops/event', {
+  await authFetch('/api/ops/event', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ event })
@@ -258,7 +258,7 @@ async function triggerEvent(event) {
 
 async function getOpsSummary() {
   document.getElementById("opsSummary").innerText = "Generating...";
-  const response = await fetch('/api/ops/summary');
+  const response = await authFetch('/api/ops/summary');
   const data = await response.json();
   document.getElementById("opsSummary").innerText = data.summary;
 }
@@ -271,7 +271,7 @@ async function getDirections() {
 
   document.getElementById("directionsOutput").innerText = "Generating route...";
 
-  const response = await fetch('/api/navigator/route', {
+  const response = await authFetch('/api/navigator/route', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ stadiumId, from, to })
@@ -302,7 +302,7 @@ async function captureAndDescribe(mode) {
 
   document.getElementById("visionOutput").innerText = "Analyzing...";
 
-  const response = await fetch('/api/vision/describe', {
+  const response = await authFetch('/api/vision/describe', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ imageBase64: base64, mimeType: "image/jpeg", mode })
@@ -452,7 +452,7 @@ async function analyzeMap() {
   tempCanvas.getContext("2d").drawImage(mapImageObj, 0, 0);
   const base64 = tempCanvas.toDataURL("image/png").split(",")[1];
 
-  const response = await fetch('/api/map/analyze', {
+  const response = await authFetch('/api/map/analyze', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ imageBase64: base64, mimeType: "image/png" })
@@ -499,7 +499,7 @@ async function saveMapToDatabase() {
   const cleanNodes = [...new Set(mapNodes.map(n => n.name))];
   const imageDataUrl = mapCanvas.toDataURL("image/png");
 
-  const response = await fetch('/api/map/save', {
+  const response = await authFetch('/api/map/save', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ name, nodes: cleanNodes, edges: mapEdges, image: imageDataUrl })
@@ -511,7 +511,7 @@ async function saveMapToDatabase() {
 }
 
 async function loadLatestStadiumMap() {
-  const response = await fetch('/api/map/list');
+  const response = await authFetch('/api/map/list');
   const stadiums = await response.json();
   if (!stadiums || stadiums.length === 0) return;
 
@@ -522,7 +522,7 @@ async function loadLatestStadiumMap() {
 
 async function loadStadiumMapImage(stadiumId) {
   if (!stadiumId) return;
-  const response = await fetch(`/api/map/${stadiumId}`);
+  const response = await authFetch(`/api/map/${stadiumId}`);
   if (!response.ok) return;
   const data = await response.json();
   const imgEl = document.getElementById("navigatorMapImage");
