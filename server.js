@@ -52,6 +52,22 @@ app.use('/api/navigator', require('./routes/navigator').createRouter(model, supa
 app.use('/api/vision', require('./routes/visionAssist')(model));
 app.use("/auth", authRoutes(supabase));
 
+module.exports = (supabase) => {
+  return async (req, res, next) => {
+    const authHeader = req.headers.authorization;
+    const token = authHeader && authHeader.split(' ')[1];
+
+    if (!token) return res.status(401).json({ error: "Not authenticated" });
+
+    const { data, error } = await supabase.auth.getUser(token);
+    if (error || !data.user) return res.status(401).json({ error: "Invalid or expired session" });
+
+    req.user = data.user;
+    req.token = token; // needed to build a user-scoped Supabase client downstream
+    next();
+  };
+};
+
 app.listen(PORT, () => {
   console.log(`Server is running at http://localhost:${PORT}`);
 });

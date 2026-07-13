@@ -1,11 +1,19 @@
 const express = require('express');
 const router = express.Router();
+const { createClient } = require('@supabase/supabase-js');
 
 // Direct export of a factory function (this file only has one router,
 // unlike navigator.js which also exports a standalone testable function)
 module.exports = (model, supabase, stadiumContext) => {
   router.post('/', async (req, res) => {
     const userMessage = req.body.message;
+
+    // A client scoped to THIS user's token — so RLS's auth.uid() correctly
+    // resolves to req.user.id, instead of null (which happens with the
+    // shared anonymous client from server.js)
+    const userSupabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY, {
+      global: { headers: { Authorization: `Bearer ${req.token}` } }
+    });
 
     // Context Engine values (crowdDensity/noiseLevel/language) are injected
     // live so the AI's answer reflects *current* stadium conditions, not
@@ -40,8 +48,12 @@ Fan's question: ${userMessage}
 
   // Returns past chat messages, most recent first, so the frontend can
   // render a scrollback / conversation history view
-  router.get('/history', async (req, res) => {
-    const { data, error } = await supabase
+    router.get('/history', async (req, res) => {
+    const userSupabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY, {
+      global: { headers: { Authorization: `Bearer ${req.token}` } }
+    });
+
+    const { data, error } = await userSupabase
       .from('messages')
       .select('*')
       .eq('user_id', req.user.id)
