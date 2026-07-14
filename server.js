@@ -7,7 +7,7 @@ const compression = require('compression');
 
 const app = express();
 app.use(compression()); // gzip responses — smaller payloads, faster load, standard production practice
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3000; // platform-injected PORT in production, falls back to 3000 locally
 
 app.use(express.static('public')); // serves index.html, auth.html, and all frontend JS/CSS as static files
 app.use(express.json({ limit: '10mb' })); // 10mb cap needed for base64 camera/seating-chart images (Vision Assist, Map Analyzer)
@@ -17,6 +17,11 @@ app.use(express.json({ limit: '10mb' })); // 10mb cap needed for base64 camera/s
 // grounding config defined in exactly one place
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" , tools: [{ googleSearch: {} }]});
+
+// Anonymous/service-level client — used only for things that don't need a
+// specific logged-in user's identity (e.g. verifying tokens in requireAuth).
+// Routes that read/write RLS-protected tables build their own per-request
+// client instead (see userSupabase pattern in chat.js, mapAnalyzer.js).
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
 
 // requireAuth needs `supabase` to already exist (it verifies session tokens
@@ -39,34 +44,19 @@ let stadiumContext = {
   ],
 };
 
-// Each route module is wired in here with exactly the dependencies it needs
-// (model, supabase, stadiumContext) — keeps every route file free of direct
-// imports/instantiation of its own AI client or DB connection, so they stay
-// easy to unit test with mocked/fake versions instead
+// Every route now requires a valid logged-in session (requireAuth) — this
+// closes the gap where routes were only "protected" by the frontend
+// redirecting unauthenticated users, which never stopped direct API calls.
+// /auth (signup/login) is intentionally left open, since a user isn't
+// logged in yet when they're trying to log in.
 app.use('/api/chat', requireAuth, require('./routes/chat')(model, supabase, stadiumContext));
-app.use('/api/context', require('./routes/context')(stadiumContext));
-app.use('/api/sensory-map', require('./routes/sensoryMap').createRouter(stadiumContext));
+app.use('/api/context', requireAuth, require('./routes/context')(stadiumContext));
+app.use('/api/sensory-map', requireAuth, require('./routes/sensoryMap').createRouter(stadiumContext));
 app.use('/api/ops', requireAuth, require('./routes/opsIntelligence').createRouter(model, stadiumContext));
-app.use('/api/map', require('./routes/mapAnalyzer')(model, supabase));
-app.use('/api/navigator', require('./routes/navigator').createRouter(model, supabase));
-app.use('/api/vision', require('./routes/visionAssist')(model));
+app.use('/api/map', requireAuth, require('./routes/mapAnalyzer')(model, supabase));
+app.use('/api/navigator', requireAuth, require('./routes/navigator').createRouter(model, supabase));
+app.use('/api/vision', requireAuth, require('./routes/visionAssist')(model));
 app.use("/auth", authRoutes(supabase));
-
-module.exports = (supabase) => {
-  return async (req, res, next) => {
-    const authHeader = req.headers.authorization;
-    const token = authHeader && authHeader.split(' ')[1];
-
-    if (!token) return res.status(401).json({ error: "Not authenticated" });
-
-    const { data, error } = await supabase.auth.getUser(token);
-    if (error || !data.user) return res.status(401).json({ error: "Invalid or expired session" });
-
-    req.user = data.user;
-    req.token = token; // needed to build a user-scoped Supabase client downstream
-    next();
-  };
-};
 
 app.listen(PORT, () => {
   console.log(`Server is running at http://localhost:${PORT}`);

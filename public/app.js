@@ -2,6 +2,21 @@ SUPABASE_URL="https://vhbuxlmzecflwfpaqxfr.supabase.co"
 SUPABASE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZoYnV4bG16ZWNmbHdmcGFxeGZyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM1OTI5OTcsImV4cCI6MjA5OTE2ODk5N30.0EUqWZxTh1RnVIbHDj_UDkiyvZvoyJDBGJZj7Fhu1TY"
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+// Wraps fetch with the current session's auth token attached — every
+// protected API route needs this, so we do it once here instead of
+// repeating the same 3 lines in every function that calls the backend
+async function authFetch(url, options = {}) {
+  const { data: { session } } = await supabaseClient.auth.getSession();
+  console.log("TOKEN BEING SENT:", session?.access_token); // temporary debug line
+  return fetch(url, {
+    ...options,
+    headers: {
+      ...(options.headers || {}),
+      "Authorization": `Bearer ${session.access_token}`,
+    },
+  });
+}
+
 document.querySelectorAll('[role="link"], [role="button"]').forEach(item => {
   item.addEventListener('keydown', (e) => {
     if (e.key === 'Enter' || e.key === ' ') {

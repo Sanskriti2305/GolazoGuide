@@ -34,7 +34,7 @@ Fan's question: ${userMessage}
 
       // Log every exchange for history/audit — failure here shouldn't block
       // the fan from getting their reply, so we just log and continue
-      const { error } = await supabase
+      const { error } = await userSupabase
       .from('messages')
       .insert([{ user_message: userMessage, ai_reply: reply, user_id: req.user.id }]);
 

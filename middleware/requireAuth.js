@@ -12,6 +12,7 @@ module.exports = (supabase) => {
     if (error || !data.user) return res.status(401).json({ error: "Invalid or expired session" });
 
     req.user = data.user; // now available to any route after this middleware
+    req.token = token;
     next();
   };
 };
