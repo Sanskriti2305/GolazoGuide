@@ -7,7 +7,9 @@ const { createClient } = require('@supabase/supabase-js');
 module.exports = (model, supabase, stadiumContext) => {
   router.post('/', async (req, res) => {
     const userMessage = req.body.message;
-
+    if (!userMessage || typeof userMessage !== 'string' || userMessage.trim().length === 0) {
+      return res.status(400).json({ reply: "Message cannot be empty." });
+    }
     // A client scoped to THIS user's token — so RLS's auth.uid() correctly
     // resolves to req.user.id, instead of null (which happens with the
     // shared anonymous client from server.js)

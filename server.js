@@ -1,5 +1,6 @@
 require('dotenv').config(); // loads GEMINI_API_KEY, SUPABASE_URL, SUPABASE_KEY from .env — never commit this file
 const express = require('express');
+const rateLimit = require('express-rate-limit');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 const { createClient } = require('@supabase/supabase-js');
 const authRoutes = require("./routes/auth");
@@ -28,6 +29,14 @@ const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY
 // against it), so this must come after createClient(), not before
 const requireAuth = require('./middleware/requireAuth')(supabase);
 
+// Limits repeated calls to Gemini-backed routes — protects free-tier quota
+// from being exhausted by rapid/accidental repeated requests
+const aiLimiter = rateLimit({
+  windowMs: 60 * 1000, // 1 minute
+  max: 10, // max 10 requests per minute per IP
+  message: { error: "Too many requests — please wait a moment and try again." }
+});
+
 // The Context Engine's live state — a single shared object passed by reference
 // into every route that needs it (chat, sensoryMap, opsIntelligence, context).
 // Starts with demo defaults so the app has something to show before any real
@@ -49,13 +58,13 @@ let stadiumContext = {
 // redirecting unauthenticated users, which never stopped direct API calls.
 // /auth (signup/login) is intentionally left open, since a user isn't
 // logged in yet when they're trying to log in.
-app.use('/api/chat', requireAuth, require('./routes/chat')(model, supabase, stadiumContext));
+app.use('/api/chat', requireAuth, aiLimiter, require('./routes/chat')(model, supabase, stadiumContext));
 app.use('/api/context', requireAuth, require('./routes/context')(stadiumContext));
 app.use('/api/sensory-map', requireAuth, require('./routes/sensoryMap').createRouter(stadiumContext));
-app.use('/api/ops', requireAuth, require('./routes/opsIntelligence').createRouter(model, stadiumContext));
-app.use('/api/map', requireAuth, require('./routes/mapAnalyzer')(model, supabase));
+app.use('/api/ops', requireAuth, aiLimiter, require('./routes/opsIntelligence').createRouter(model, stadiumContext));
+app.use('/api/map', requireAuth, aiLimiter, require('./routes/mapAnalyzer')(model, supabase));
 app.use('/api/navigator', requireAuth, require('./routes/navigator').createRouter(model, supabase));
-app.use('/api/vision', requireAuth, require('./routes/visionAssist')(model));
+app.use('/api/vision', requireAuth, aiLimiter, require('./routes/visionAssist')(model));
 app.use("/auth", authRoutes(supabase));
 
 app.listen(PORT, () => {

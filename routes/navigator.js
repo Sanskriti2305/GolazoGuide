@@ -64,6 +64,9 @@ module.exports.findShortestPath = findShortestPath;
 module.exports.createRouter = (model, supabase) => {
   router.post('/route', async (req, res) => {
     const { stadiumId, from, to } = req.body;
+    if (!stadiumId || !from || !to) {
+      return res.status(400).json({ directions: "stadiumId, from, and to are all required." });
+    }
 
     // Map data (nodes/edges/image) lives in Supabase per-venue, built earlier
     // by the Map Builder/digitizer feature

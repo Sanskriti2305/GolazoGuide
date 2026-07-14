@@ -8,6 +8,9 @@ module.exports = (model) => {
   // the same image-in/spoken-text-out shape — just different prompts.
   router.post('/describe', async (req, res) => {
     const { imageBase64, mimeType, mode } = req.body;
+    if (!imageBase64 || !mimeType) {
+      return res.status(400).json({ description: "Image data and mimeType are required." });
+    }
 
     let prompt;
     if (mode === "seat") {

@@ -44,6 +44,9 @@ router.post('/save', async (req, res) => {
     });
 
     const { name, nodes, edges, image } = req.body;
+    if (!name || !Array.isArray(nodes) || !Array.isArray(edges)) {
+      return res.status(400).json({ error: "name, nodes (array), and edges (array) are required." });
+    }
     const cleanNodes = [...new Set(nodes)];
 
     const { data, error } = await userSupabase
